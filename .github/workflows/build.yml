@@ -1,34 +1,25 @@
-name: Build APK
-
-on: 
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+name: Build
+on: [push, pull_request]
 
 jobs:
+  # Build job. Builds app for Android with Buildozer
   build-android:
     name: Build for Android
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Step 2: Build the APK using Buildozer Action
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
         with:
-          # If your buildozer.spec is in the root, use "."
-          # If it is in a subfolder (e.g., "src" or "app"), change the workdir accordingly.
-          workdir: .
+          workdir: test_app
           buildozer_version: stable
 
-      # Step 3: Upload the generated APK as an artifact
-      - name: Upload APK Artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: apk-package
+          name: package
           path: ${{ steps.buildozer.outputs.filename }}
